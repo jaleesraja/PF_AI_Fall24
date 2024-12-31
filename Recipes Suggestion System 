@@ -1,0 +1,161 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+const int MAX_RECIPES = 100; // Maximum number of recipes
+const int MAX_INGREDIENTS = 10; // Maximum number of ingredients per recipe
+
+struct Recipe {
+    string name;
+    string ingredients[MAX_INGREDIENTS];
+    int ingredientCount;
+    string steps;
+};
+
+Recipe recipes[MAX_RECIPES]; // Array to store recipes
+int recipeCount = 0; // Number of recipes currently stored
+
+void addRecipe() {
+    if (recipeCount >= MAX_RECIPES) {
+        cout << "Cannot add more recipes. Maximum limit reached.\n";
+        return;
+    }
+
+    Recipe recipe;
+    string ingredients;
+
+    cout << "\nEnter the recipe name: ";
+    cin.ignore();
+    getline(cin, recipe.name);
+
+    cout << "Enter the ingredients (comma-separated): ";
+    getline(cin, ingredients);
+
+    stringstream ss(ingredients);
+    string item;
+    recipe.ingredientCount = 0;
+    while (getline(ss, item, ',') && recipe.ingredientCount < MAX_INGREDIENTS) {
+        recipe.ingredients[recipe.ingredientCount++] = item;
+    }
+
+    cout << "Enter the steps: ";
+    getline(cin, recipe.steps);
+
+    recipes[recipeCount++] = recipe;
+    cout << "Recipe added successfully!\n";
+}
+
+void displayRecipe(const Recipe& recipe) {
+    cout << "\nRecipe Name: " << recipe.name << "\nIngredients: ";
+    for (int i = 0; i < recipe.ingredientCount; i++) {
+        cout << recipe.ingredients[i];
+        if (i < recipe.ingredientCount - 1) cout << ", ";
+    }
+    cout << "\nSteps: " << recipe.steps << "\n";
+}
+
+void suggestRecipes() {
+    string availableIngredients;
+    cout << "\nEnter your available ingredients (comma-separated): ";
+    cin.ignore();
+    getline(cin, availableIngredients);
+
+    stringstream ss(availableIngredients);
+    string userIngredients[MAX_INGREDIENTS];
+    int userIngredientCount = 0;
+    string item;
+    while (getline(ss, item, ',') && userIngredientCount < MAX_INGREDIENTS) {
+        userIngredients[userIngredientCount++] = item;
+    }
+
+    cout << "\nSuggested Recipes:\n";
+    bool found = false;
+    for (int i = 0; i < recipeCount; i++) {
+        int matchCount = 0;
+        for (int j = 0; j < userIngredientCount; j++) {
+            for (int k = 0; k < recipes[i].ingredientCount; k++) {
+                if (userIngredients[j] == recipes[i].ingredients[k]) {
+                    matchCount++;
+                }
+            }
+        }
+        if (matchCount > 0) {
+            displayRecipe(recipes[i]);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No recipes found for the given ingredients.\n";
+    }
+}
+
+void searchRecipes() {
+    string keyword;
+    cout << "\nEnter the recipe name or keyword to search: ";
+    cin.ignore();
+    getline(cin, keyword);
+
+    bool found = false;
+    for (int i = 0; i < recipeCount; i++) {
+        if (recipes[i].name.find(keyword) != string::npos) {
+            displayRecipe(recipes[i]);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No recipes found with the given keyword.\n";
+    }
+}
+
+void displayMenu() {
+    cout << "\n--- Pakistani Recipe Suggestion System ---";
+    cout << "\n1. Add a New Recipe";
+    cout << "\n2. View Suggested Recipes";
+    cout << "\n3. Search for a Recipe";
+    cout << "\n4. Exit";
+    cout << "\nEnter your choice: ";
+}
+
+void preloadPakistaniRecipes() {
+    recipes[recipeCount++] = {"Biryani", {"rice", "chicken", "yogurt", "spices", "onion", "tomato"}, 6, "Cook chicken with spices, layer with rice, and steam."};
+    recipes[recipeCount++] = {"Karahi", {"chicken", "tomato", "green chilies", "ginger", "spices"}, 5, "Cook chicken with tomatoes and spices until tender."};
+    recipes[recipeCount++] = {"Haleem", {"meat", "wheat", "lentils", "spices", "onion"}, 5, "Cook meat and lentils together, blend, and add fried onions."};
+    recipes[recipeCount++] = {"Nihari", {"beef", "flour", "spices", "ginger", "lemon"}, 5, "Slow-cook beef with spices and garnish with ginger and lemon."};
+    recipes[recipeCount++] = {"Seekh Kebab", {"minced meat", "onion", "spices", "green chilies"}, 4, "Mix ingredients, shape onto skewers, and grill."};
+    recipes[recipeCount++] = {"Chapli Kebab", {"minced meat", "egg", "spices", "tomato", "onion"}, 5, "Mix ingredients, shape into patties, and fry."};
+    recipes[recipeCount++] = {"Pulao", {"rice", "chicken", "onion", "spices", "yogurt"}, 5, "Cook chicken with spices, add rice, and simmer."};
+    recipes[recipeCount++] = {"Daal Chawal", {"lentils", "rice", "onion", "spices", "tomato"}, 5, "Boil lentils with spices, cook rice, and serve together."};
+    recipes[recipeCount++] = {"Aloo Sabzi", {"potatoes", "tomato", "onion", "spices"}, 4, "Cook potatoes with tomatoes, onions, and spices."};
+    recipes[recipeCount++] = {"Bhindi Masala", {"ladyfinger", "onion", "tomato", "spices"}, 4, "Fry ladyfinger with onions, tomatoes, and spices."};
+    recipes[recipeCount++] = {"Chana Masala", {"chickpeas", "tomato", "onion", "spices"}, 4, "Cook chickpeas with onions, tomatoes, and spices."};
+}
+
+int main() {
+    preloadPakistaniRecipes();
+    int choice;
+
+    while (true) {
+        displayMenu();
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addRecipe();
+                break;
+            case 2:
+                suggestRecipes();
+                break;
+            case 3:
+                searchRecipes();
+                break;
+            case 4:
+                cout << "Exiting the program. Goodbye!\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}
