@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Prototypes
+void WelcomeMsg();
+void DisplayMenu();
+void TakeOrder();
+void GenerateBill();
+
+// Struct for menu item
+struct MenuItem {
+    string name;
+    double price;
+};
+
+// Define the menu
+const int MENU_SIZE = 15;
+MenuItem menu[MENU_SIZE] = {
+    {"Coffee", 3.50},
+    {"Tea", 2.00},
+    {"Sandwich", 5.00},
+    {"Burger", 7.50},
+    {"Juice", 4.00},
+    {"Croissant", 2.00},
+    {"Muffin", 2.50},
+    {"Bagel", 3.50},
+    {"Fries", 2.50},
+    {"Brownie", 3.00},
+    {"Cheesecake", 4.50},
+    {"Ice Cream", 2.50},
+    {"Tiramisu", 5.00},
+    {"Chocolate Cake", 4.00},
+    {"Pasta", 6.00}
+};
+
+// Struct for customer orders
+struct Order {
+    MenuItem item;
+    int quantity;
+};
+
+Order customerOrders[MENU_SIZE] = {};
+int orderCount = 0;
+
+// Main Function
+int main() {
+    bool processing = true;
+
+    while (processing) {
+        cout << "\n\t====== Welcome to BSF Cafe ======" << endl;
+        cout << "1. Display Menu" << endl;
+        cout << "2. Take Order" << endl;
+        cout << "3. Generate Bill" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                DisplayMenu();
+                break;
+            case 2:
+                TakeOrder();
+                break;
+            case 3:
+                GenerateBill();
+                break;
+            case 4:
+                cout << "---- Thank you for visiting us. ----" << endl;
+                cout << "---- Have a good day! ----" << endl;
+                processing = false;
+                break;
+            default:
+                cout << "-- Invalid choice. Please try again. --" << endl;
+        }
+    }
+
+    return 0;
+}
+
+// Function to display the menu
+void DisplayMenu() {
+    cout << "\n======== BSF Menu ========" << endl;
+
+    cout << "\n***** Beverages *****" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << i + 1 << ". " << menu[i].name << " - $" << menu[i].price << endl;
+    }
+
+    cout << "\n***** Snacks *****" << endl;
+    for (int i = 5; i < 10; i++) {
+        cout << i + 1 << ". " << menu[i].name << " - $" << menu[i].price << endl;
+    }
+
+    cout << "\n***** Desserts *****" << endl;
+    for (int i = 10; i < MENU_SIZE; i++) {
+        cout << i + 1 << ". " << menu[i].name << " - $" << menu[i].price << endl;
+    }
+}
+
+// Function to take orders
+void TakeOrder() {
+    int choice, quantity;
+
+    while (true) {
+        cout << "\nEnter the item number to order (0 to finish): ";
+        cin >> choice;
+
+        if (choice == 0) {
+            break; // Exit ordering
+        }
+
+        if (choice < 1 || choice > MENU_SIZE) {
+            cout << "Invalid choice. Please select a valid item." << endl;
+            continue;
+        }
+
+        cout << "Enter the quantity for " << menu[choice - 1].name << ": ";
+        cin >> quantity;
+
+        if (quantity <= 0) {
+            cout << "Invalid quantity. Please enter a positive number." << endl;
+            continue;
+        }
+
+        // Add the order to the list
+        customerOrders[orderCount] = {menu[choice - 1], quantity};
+        orderCount++;
+        cout << menu[choice - 1].name << " x" << quantity << " added to your order." << endl;
+    }
+}
+
+// Function to generate the bill
+void GenerateBill() {
+    double total = 0.0;
+
+    cout << "\n========== Your Bill ==========" << endl;
+
+    for (int i = 0; i < orderCount; i++) {
+        double itemCost = customerOrders[i].quantity * customerOrders[i].item.price;
+        total += itemCost;
+        cout << customerOrders[i].item.name << " x" << customerOrders[i].quantity
+             << " - $" << itemCost << endl;
+    }
+
+    cout << "================================" << endl;
+    cout << "Total Bill: $" << total << endl;
+    cout << "================================" << endl;
+
+    // Reset orders after bill generation
+    orderCount = 0;
+}
