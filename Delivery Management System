@@ -1,0 +1,129 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Structure to hold delivery details
+struct Delivery {
+    int id;
+    string customerName;
+    string address;
+    string itemName;
+    float cost;
+};
+
+// Function prototypes
+void addDelivery(Delivery deliveries[], int& count, int maxDeliveries);
+void displayDeliveries(Delivery deliveries[], int count);
+void searchDelivery(Delivery deliveries[], int count);
+
+int main() {
+    const int maxDeliveries = 100; // Maximum number of deliveries
+    Delivery deliveries[maxDeliveries];
+    int count = 0; // Current number of deliveries
+    int choice;
+
+    do {
+        cout << "\n--- Delivery Service Management ---\n";
+        cout << "1. Add Delivery\n";
+        cout << "2. Display All Deliveries\n";
+        cout << "3. Search Delivery by ID\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addDelivery(deliveries, count, maxDeliveries);
+                break;
+            case 2:
+                displayDeliveries(deliveries, count);
+                break;
+            case 3:
+                searchDelivery(deliveries, count);
+                break;
+            case 4:
+                cout << "Exiting program. Goodbye!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+// Function to add a delivery
+void addDelivery(Delivery deliveries[], int& count, int maxDeliveries) {
+    if (count >= maxDeliveries) {
+        cout << "Delivery list is full. Cannot add more deliveries.\n";
+        return;
+    }
+
+    Delivery newDelivery;
+    cout << "Enter Delivery ID: ";
+    cin >> newDelivery.id;
+    cin.ignore(); // To ignore leftover newline character
+    cout << "Enter Customer Name: ";
+    getline(cin, newDelivery.customerName);
+    cout << "Enter Address: ";
+    getline(cin, newDelivery.address);
+    cout << "Enter Item Name: ";
+    getline(cin, newDelivery.itemName);
+    cout << "Enter Item Cost: ";
+    cin >> newDelivery.cost;
+
+    deliveries[count] = newDelivery;
+    count++;
+    cout << "Delivery added successfully!\n";
+}
+
+// Function to display all deliveries
+void displayDeliveries(Delivery deliveries[], int count) {
+    if (count == 0) {
+        cout << "No deliveries available.\n";
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        cout << "-----------------------------\n";
+        cout << "Delivery ID: " << deliveries[i].id << endl;
+        cout << "Customer Name: " << deliveries[i].customerName << endl;
+        cout << "Address: " << deliveries[i].address << endl;
+        cout << "Item Name: " << deliveries[i].itemName << endl;
+        cout << "Item Cost: $" << deliveries[i].cost << endl;
+    }
+    cout << "-----------------------------\n";
+}
+
+// Function to search for a delivery by ID
+void searchDelivery(Delivery deliveries[], int count) {
+    if (count == 0) {
+        cout << "No deliveries available to search.\n";
+        return;
+    }
+
+    int searchID;
+    cout << "Enter Delivery ID to search: ";
+    cin >> searchID;
+
+    bool found = false;
+    for (int i = 0; i < count; i++) {
+        if (deliveries[i].id == searchID) {
+            cout << "-----------------------------\n";
+            cout << "Delivery ID: " << deliveries[i].id << endl;
+            cout << "Customer Name: " << deliveries[i].customerName << endl;
+            cout << "Address: " << deliveries[i].address << endl;
+            cout << "Item Name: " << deliveries[i].itemName << endl;
+            cout << "Item Cost: $" << deliveries[i].cost << endl;
+            cout << "-----------------------------\n";
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Delivery with ID " << searchID << " not found.\n";
+    }
+    
+    
+}
